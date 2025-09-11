@@ -132,8 +132,6 @@ readTabularFromString(Stringable|string $content, array $header = []): TabularDa
 Parses a file or stream as tabular data. Auto-detects headers if `$header` is empty.
 
 ```php
-use League\Csv\Statement;
-
 $tabular = LdJson::readTabularFromString($ldjsonString);
 foreach ($tabular as $record) {
     var_dump($record);
