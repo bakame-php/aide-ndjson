@@ -1,8 +1,11 @@
-# NdJson — Lightweight NDJSON Encoder/Decoder
+# Aide for NDJSON
+
+A robust NDJSON?JSONL Encoder/Decoder for PHP
+
+## Introduction
 
 `NdJson` is a robust PHP utility for **encoding, decoding, streaming, and tabular parsing of NDJSON (Newlinw-Delimited JSON)**
-— also commonly known as **JSON Lines (JSONL)**.
-Both names refer to the same format: one JSON object per line, separated by `\n`.
+— also commonly known as **JSON Lines (JSONL)**. Both names refer to the same format: one JSON object per line, separated by `\n`.
 
 It supports both **object-row** and **list-header** formats, streaming iterators, and static-analysis-friendly types for PHPStan/Psalm.
 
@@ -23,98 +26,100 @@ You need:
 
 ## Usage
 
+The package public API is a collection of static methods declared on the `NdJson` class.
+
 ### Encoding NDJSON
 
-#### Encode to a string
+Different encoding strategies are supported, depending on how you want to generate your
+NDJSON content. You can encode using:
+
+- the `encode()` method to output a string
+- the `write()` method to store the output into a file ;
+- the `chunk()` method to generate a NDJSON by chunks of string
+- the `download()` method to encode and make the file downloadable via any HTTP client.
+
+#### Encode an array of data to NDJSON/JSONL string
 
 ```php
-encode(iterable $data, ?callable $formatter = null): string
+$data = [
+    ['name' => 'Alice', 'score' => 42],
+    ['name' => 'Bob', 'score' => 27],
+];
+
+$ndjson = NdJson::encode($data);
+echo $ndjson;
+
+/*
+{"name":"Alice","score":42}
+{"name":"Bob","score":27}
+*/
 ```
 
-Converts an array or iterable of JSON-encodable values to NDJSON string.
+#### Write NDJSON/JSONL directly to a file
 
 ```php
-use Bakame\Aide\NdJson\NdJson;
+$data = [
+    ['user' => 'Charlie', 'active' => true],
+    ['user' => 'Diana', 'active' => false],
+];
 
-$ldjson = NdJson::encode($data);
+NdJson::write($data, __DIR__ . '/users.ndjson');
 ```
 
-Optional `$formatter` allows transforming each element before encoding:
+#### Make NDJSON downloadable via HTTP
 
 ```php
-$ldjson = NdJson::encode($data, fn (Player $user) => $player->toArray());
+// In a controller:
+return NdJson::download(
+    [['id' => 1, 'value' => 'foo'], ['id' => 2, 'value' => 'bar']],
+    filename: 'export.ndjson'
+);
 ```
-
-#### Encode to a stream (file)
-
-```php
-write(iterable $data, mixed $to, ?callable $formatter = null, $context = null): int
-```
-
-Writes NDJSON to a file, stream, or resource. Returns the number of bytes written:
-
-```php
-NdJson::write($data, '/tmp/scores.jsonl');
-```
-
-#### Stream while encoding
-
-```php
-chunk(iterable $data, ?callable $formatter = null): Iterator
-```
-
-Streams NDJSON line by line as an iterator:
-
-```php
-foreach (NdJson::chunk($data) as $line) {
-    echo $line, "\n";
-}
-```
-
-#### Encode and download
-
-```php
-download(iterable $data, ?string $filename = null, ?callable $formatter = null): int
-```
-
-Outputs NDJSON via HTTP. Returns the number of characters sent.
-
-```php
-NdJson::download($data, 'scores.ldjson');
-```
-
-> [!NOTE] Intended for web context (brownser download)
 
 ### Decoding NDJSON
+
+The `NdJson` class allows you to also decode NDJSON/JSONL document using:
+
+- the `decode()` method to decode a NDJSON/JSONL string
+- the `read()` method to retrieve NDJSON/JSONL conten from a file;
 
 #### Decode a string
 
 ```php
-decode(Stringable|string $content, ?callable $mapper = null): Iterator
-```
+$content = <<<NDJSON
+{"name":"Alice","score":42}
+{"name":"Bob","score":27}
+NDJSON;
 
-Parses NDJSON from string and optionally maps each row:
-
-```php
-$iterator = NdJson::decode($ldjsonString);
-foreach ($iterator as $row) {
-    print_r($row);
+foreach (NdJson::decode($content) as $row) {
+    var_dump($row);
 }
-
-// Mapping to objects
-$objects = NdJson::decode($ldjsonString, fn($row) => (object)$row);
+/*
+array(2) { ["name"]=> string(5) "Alice" ["score"]=> int(42) }
+array(2) { ["name"]=> string(3) "Bob"   ["score"]=> int(27) }
+*/
 ```
 
-#### Decode a stream (file)
+### Decode with mapper
+
 
 ```php
-read(mixed $from, ?callable $mapper = null, $context = null): Iterator
-```
+$content = <<<NDJSON
+{"value":1}
+{"value":2}
+{"value":3}
+NDJSON;
 
-Reads NDJSON from file, stream, resource, or a path referenced by a string:
+$iterator = NdJson::decode($content, fn (array $row): int => $row['value'] * 10);
 
-```php
-$iterator = NdJson::read('/tmp/scores.ldjson');
+foreach ($iterator as $num) {
+    echo $num, PHP_EOL;
+}
+/*
+10
+20
+30
+*/
 ```
 
 ## Tabular parsing
@@ -126,7 +131,7 @@ NDJSON can represent **tabular data** in two forms:
 
 ```php
 readTabularFromPath(mixed $path, array $header = [], $context = null): TabularData
-readTabularFromString(Stringable|string $content, array $header = []): TabularData
+decodeTabularFromString(Stringable|string $content, array $header = []): TabularData
 ```
 
 Parses a file or stream as tabular data. Auto-detects headers if `$header` is empty.
