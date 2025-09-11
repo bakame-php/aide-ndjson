@@ -8,6 +8,7 @@ use League\Csv\ResultSet;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SplTempFileObject;
+use ValueError;
 
 use function iterator_to_array;
 
@@ -20,6 +21,14 @@ final class NdJsonTest extends TestCase
         $expected = '{"key":"value"}'."\n".'{"key2":"value2"}'."\n";
 
         self::assertSame($expected, NdJson::encode($data));
+    }
+
+    public function test_it_silently_exclude_json_pretty_print_when_encoding(): void
+    {
+        $data = [['key' => 'value'], ['key2' => 'value2']];
+        $expected = '{"key":"value"}'."\n".'{"key2":"value2"}'."\n";
+
+        self::assertSame($expected, NdJson::encode($data, flags: JSON_PRETTY_PRINT));
     }
 
     public function test_it_can_decode_to_string(): void
@@ -70,7 +79,7 @@ final class NdJsonTest extends TestCase
 ["Gilbert",24,true]
 ["Alexa",29,true]
 LDJSON;
-        $tabular = NdJson::readTabularFromString($ldjsonHeader);
+        $tabular = NdJson::decodeTabularFromString($ldjsonHeader);
 
         self::assertSame(['Name', 'Score', 'Completed'], $tabular->getHeader());
         self::assertInstanceOf(ResultSet::class, $tabular);
@@ -83,7 +92,7 @@ LDJSON;
 {"name":"Gilbert","score":24,"completed":true}
 {"name":"Alexa","score":29,"completed":true}
 LDJSON;
-        $tabular = NdJson::readTabularFromString($ldjsonHeader);
+        $tabular = NdJson::decodeTabularFromString($ldjsonHeader);
 
         self::assertSame(['name', 'score', 'completed'], $tabular->getHeader());
         self::assertInstanceOf(ResultSet::class, $tabular);
@@ -97,7 +106,7 @@ LDJSON;
 {"name":"Gilbert","score":24,"completed":true}
 {"name":"Alexa","score":29,"completed":true}
 LDJSON;
-        $tabular = NdJson::readTabularFromString($ldjsonHeader, $header);
+        $tabular = NdJson::decodeTabularFromString($ldjsonHeader, $header);
 
         self::assertSame($header, $tabular->getHeader());
         self::assertInstanceOf(ResultSet::class, $tabular);
@@ -106,8 +115,15 @@ LDJSON;
 
     public function test_it_can_read_nothing_from_an_empty_string(): void
     {
-        $tabular = NdJson::readTabularFromString('');
+        $tabular = NdJson::decodeTabularFromString('');
         self::assertInstanceOf(ResultSet::class, $tabular);
         self::assertCount(0, $tabular);
+    }
+
+    public function test_it_fails_to_instantiate_an_empty_file(): void
+    {
+        $this->expectException(ValueError::class);
+
+        NdJson::readTabularFromPath(''); /* @phpstan-ignore-line */
     }
 }

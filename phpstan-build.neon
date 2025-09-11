@@ -8,6 +8,5 @@ parameters:
     paths:
         - src
     ignoreErrors:
-        - '#Attribute class Deprecated does not exist.#'
     reportUnmatchedIgnoredErrors: true
     treatPhpDocTypesAsCertain: false

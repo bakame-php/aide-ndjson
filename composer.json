@@ -42,9 +42,10 @@
         }
     },
     "scripts": {
-        "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi",
+        "phpcs": "php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi",
         "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
         "phpstan": "phpstan analyse -c phpstan.neon --ansi --memory-limit=192M",
+        "phpstan-build": "phpstan analyse -c phpstan-build.neon --ansi --memory-limit=192M",
         "phpunit": "XDEBUG_MODE=coverage phpunit --coverage-text",
         "phpunit:min": "phpunit --no-coverage",
         "test": [
@@ -57,6 +58,7 @@
         "phpcs": "Runs coding style testing",
         "phpcs:fix": "Fix coding style issues",
         "phpstan": "Runs complete codebase static analysis",
+        "phpstan-build": "Runs complete codebase static analysis on latest stable PHP version",
         "phpunit": "Runs unit and functional testing",
         "test": "Runs all tests"
     },
