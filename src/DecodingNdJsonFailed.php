@@ -6,27 +6,25 @@ namespace Bakame\Aide\NdJson;
 
 use Throwable;
 
-class EncodingNdJsonFailed extends NdJsonException
+class DecodingNdJsonFailed extends NdJsonException
 {
     public function __construct(
         string $message,
-        protected mixed $data = null,
-        protected mixed $offset = null,
+        protected string $data = '',
+        protected string|int|null $offset = null,
         int $code = 0,
         ?Throwable $previous = null
     ) {
         parent::__construct($message, $code, $previous);
     }
 
-    public function getData(): mixed
+    public function getData(): string
     {
         return $this->data;
     }
 
-    public function getOffset(): mixed
+    public function getOffset(): string|int|null
     {
         return $this->offset;
     }
-
-
 }
