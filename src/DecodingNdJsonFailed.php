@@ -6,12 +6,12 @@ namespace Bakame\Aide\NdJson;
 
 use Throwable;
 
-class EncodingNdJsonFailed extends NdJsonException
+class DecodingNdJsonFailed extends NdJsonException
 {
     public function __construct(
         string $message,
         protected mixed $value = null,
-        protected mixed $offset = null,
+        protected string|int|null $offset = null,
         int $code = 0,
         ?Throwable $previous = null
     ) {
@@ -23,10 +23,8 @@ class EncodingNdJsonFailed extends NdJsonException
         return $this->value;
     }
 
-    public function getOffset(): mixed
+    public function getOffset(): string|int|null
     {
         return $this->offset;
     }
-
-
 }

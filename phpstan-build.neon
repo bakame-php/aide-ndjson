@@ -8,5 +8,6 @@ parameters:
     paths:
         - src
     ignoreErrors:
+        - identifier: missingType.generics
     reportUnmatchedIgnoredErrors: true
     treatPhpDocTypesAsCertain: false

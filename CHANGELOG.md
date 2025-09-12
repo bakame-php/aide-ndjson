@@ -6,14 +6,14 @@ All Notable changes to `bakame/aide-ndjon` will be documented in this file.
 
 ### Added
 
-- `$flags` parameter to encoding method to allow configuring json flags encoding static methods.
-- `$chunkSize` parameter to encoding method to control how many rows are generated per chunk.
-- `NdJson::decodeTabularFromString`
-- Package specific exceptions `NdJsonException`, `EncodingNdJsonFailed` and `InvalidNdJsonArgument`
+**⚠️Package complete rewrite!!⚠️**
+
+- `Codec` to ease API usage
+- `ndjons_encode`, `ndjons_decode`, `ndjons_read`, `ndjons_write` global functions to ease usage.
 
 ### Deprecated
 
-- `NdJson::readTabularFromString` use `NdJson::decodeTabularFromString` insteaf
+- None
 
 ### Fixed
 
@@ -21,7 +21,8 @@ All Notable changes to `bakame/aide-ndjon` will be documented in this file.
 
 ### Remove
 
-- None
+- `Ndjson` class
+- dependency on `league/csv`
 
 ## [1.0.0](https://github.com/bakame-php/aide-ndjson/releases/tag/1.0.0) - 2025-09-11
 
