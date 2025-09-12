@@ -6,14 +6,19 @@ All Notable changes to `bakame/aide-ndjon` will be documented in this file.
 
 ### Added
 
-- `$flags` parameter to encoding method to allow configuring json flags encoding static methods.
+- `Format` Enum to control the NDJSON shape and format.
+- `$headerOrOffset` parameter to control the header usage.
+- `$flags` parameter to encoding method to allow configuring JSON flags encoding static methods.
 - `$chunkSize` parameter to encoding method to control how many rows are generated per chunk.
-- `NdJson::decodeTabularFromString`
-- Package specific exceptions `NdJsonException`, `EncodingNdJsonFailed` and `InvalidNdJsonArgument`
+- `$depth` parameter to handle `JSON` methods recursion parameter.
+- `NdJson::decodeTabularData`, `NdJson::readTabularData`
+- Package specific exceptions `NdJsonException`, `DecodingNdJsonFailed`, `EncodingNdJsonFailed` and `InvalidNdJsonArgument`
+- `NdJson::encodeTabularData`, `NdJson::writeTabularData` and `NdJson::downloadTabularData`
+- `Codec` to ease API usage
 
 ### Deprecated
 
-- `NdJson::readTabularFromString` use `NdJson::decodeTabularFromString` insteaf
+- None
 
 ### Fixed
 
@@ -21,7 +26,7 @@ All Notable changes to `bakame/aide-ndjon` will be documented in this file.
 
 ### Remove
 
-- None
+- `Ndjson` class
 
 ## [1.0.0](https://github.com/bakame-php/aide-ndjson/releases/tag/1.0.0) - 2025-09-11
 
