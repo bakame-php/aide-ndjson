@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Bakame\Aide\NdJson;
 
-class InvalidNdJsonArgument extends NdJsonException
+class StreamException extends NdJsonException
 {
 }
