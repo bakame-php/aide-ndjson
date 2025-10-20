@@ -2,7 +2,7 @@
 
 All Notable changes to `bakame/aide-ndjon` will be documented in this file.
 
-## [Next](https://github.com/bakame-php/aide-ndjson/releases/tag/1.0.0...main) - TBD
+## [2.0.0](https://github.com/bakame-php/aide-ndjson/releases/tag/1.0.0...2.0.0) - 2025-10-20
 
 ### Added
 
