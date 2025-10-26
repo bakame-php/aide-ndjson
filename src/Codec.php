@@ -127,11 +127,11 @@ final class Codec
      */
     private static function methodToFlag(string $method, int $prefixSize): int
     {
-        static $suffix2Flag;
+        /** @var array<string, int<0, max>> $suffix2Flag */
+        static $suffix2Flag = [];
 
-        if (null === $suffix2Flag) {
-            $suffix2Flag = [];
-            /** @var array<string, int> $jsonFlags */
+        if ([] === $suffix2Flag) {
+            /** @var array<string, int<0, max>> $jsonFlags */
             $jsonFlags = get_defined_constants(true)['json'];
             $jsonEncodeFlags = array_filter(
                 $jsonFlags,
@@ -334,7 +334,7 @@ final class Codec
      *
      * @throws NdJsonException
      *
-     * @return Iterator<string>x
+     * @return Iterator<string>
      */
     public function chunk(iterable $value, Format $format = Format::Record, array|int $headerOrOffset = []): Iterator
     {
@@ -400,7 +400,7 @@ final class Codec
         || throw new InvalidNdJsonArgument('a valid header or headerOffset must be provided with the `Format::ListWithHeader` format.');
 
         if ((null !== $headerOffsetFound) && Format::ListWithHeader === $format) {
-            $iterator = new CallbackFilterIterator($iterator, fn ($record, $offset) => $offset !== $headerOrOffset || !array_is_list($record));
+            $iterator = new CallbackFilterIterator($iterator, fn (array $record, $offset) => $offset !== $headerOrOffset || !array_is_list($record));
         }
 
         if ([] === $header) {
@@ -413,9 +413,9 @@ final class Codec
             }
 
             $mapper = $this->mapper;
-            return new MapIterator($iterator, function ($value, $offset) use ($mapper) {
+            return new MapIterator($iterator, function (array $value, int|string $offset) use ($mapper) {
                 try {
-                    return $mapper($value, $offset);
+                    return $mapper($value, $offset);  /* @phpstan-ignore-line */
                 } catch (Exception $exception) {
                     if ($exception instanceof DecodingNdJsonFailed) {
                         throw $exception;
@@ -451,12 +451,12 @@ final class Codec
             }
 
             try {
-                return ($this->mapper)($assocRecord, $offset);
+                return ($this->mapper)($assocRecord, $offset);  /* @phpstan-ignore-line */
             } catch (Exception $exception) {
                 throw new DecodingNdJsonFailed(
                     message: 'Unable to map the json record: '.$exception->getMessage(),
                     value: $record,
-                    offset: $offset,
+                    offset: $offset,  /* @phpstan-ignore-line */
                     previous: $exception
                 );
             }
@@ -470,6 +470,7 @@ final class Codec
 
     private static function decoder(): Decoder
     {
+        /** @var ?Decoder $decoder */
         static $decoder;
 
         $decoder ??= new Decoder();
@@ -542,11 +543,11 @@ final class Codec
 
     /**
      * @param iterable<TValue> $data
-     * @param list<string>|int $header
+     * @param array<string>|int<0, max> $header
      *
      * @throws InvalidNdJsonArgument
      *
-     * @return list<string>
+     * @return array<string>
      */
     private static function header(iterable $data, Format $format, array|int $header): array
     {
@@ -574,14 +575,14 @@ final class Codec
      *
      * @throws InvalidNdJsonArgument
      *
-     * @return array{0: list<string>, 1: int|null}
+     * @return array{0: array<string>, 1: int<0, max>|null}
      */
     private static function resolveHeader(iterable $data, array $header, ?int $offset = null): array
     {
         if ([] !== $header) {
             $header === array_filter($header, is_string(...)) || throw new InvalidNdJsonArgument('The header must contain scalar values only.');
 
-            return [$header, $offset];
+            return [$header, $offset];  /* @phpstan-ignore-line */
         }
 
         if (null === $offset) {
@@ -596,7 +597,7 @@ final class Codec
         }
 
         if (array_is_list($row)) {
-            return [$row, $offset];
+            return [$row, $offset];  /* @phpstan-ignore-line */
         }
 
         return [array_keys($row), $offset];

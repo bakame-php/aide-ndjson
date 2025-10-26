@@ -13,7 +13,6 @@ use SplFileObject;
 
 use function filter_var;
 use function header;
-use function in_array;
 use function json_encode;
 use function json_last_error;
 use function preg_replace_callback;
@@ -23,7 +22,6 @@ use function set_error_handler;
 use function str_replace;
 use function strtolower;
 
-use const E_USER_WARNING;
 use const E_WARNING;
 use const FILTER_FLAG_STRIP_HIGH;
 use const FILTER_FLAG_STRIP_LOW;
@@ -129,13 +127,13 @@ final class Encoder
             $bytes = 0;
             set_error_handler(
                 fn (int $errno, string $errstr, string $errfile, int $errline): bool =>
-                in_array($errno, [E_WARNING, E_USER_WARNING], true)
+                E_WARNING === $errno
                     ? throw new ErrorException($errstr, 0, $errno, $errfile, $errline)
                     : false
             );
 
             foreach ($this->convert($value) as $offset => $line) { /* @phpstan-ignore-line */
-                $bytes += $stream->fwrite($line);
+                $bytes += $stream->fwrite($line);  /* @phpstan-ignore-line */
             }
 
             return $bytes;

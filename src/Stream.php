@@ -88,7 +88,7 @@ final class Stream implements SeekableIterator
      */
     public function getPathname(): string
     {
-        return stream_get_meta_data($this->stream)['uri'];
+        return stream_get_meta_data($this->stream)['uri'] ?? '';
     }
 
     /**
@@ -243,7 +243,6 @@ final class Stream implements SeekableIterator
     {
         null === $length || 0 <= $length || throw new StreamException(__METHOD__.'() can\'t write to stream.');
         $data = @fwrite(stream: $this->stream, data: $str, length: $length);
-        false !== $data || throw new StreamException(__METHOD__.'() can\'t write to stream.');
 
         return $data;
     }

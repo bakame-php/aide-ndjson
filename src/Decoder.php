@@ -53,7 +53,7 @@ final class Decoder
         $stream->setFlags(SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
         $filter = static fn ($current): bool => is_string($current) && '' !== trim($current);
         $flags = ($flags | JSON_THROW_ON_ERROR) & ~(JSON_OBJECT_AS_ARRAY | JSON_FORCE_OBJECT);
-        $decode = function (string $line, $offset) use ($flags, $depth): array {
+        $decode = function (string $line, int $offset) use ($flags, $depth): array {
             try {
                 /** @var array<mixed> $record */
                 $record = json_decode(trim($line), true, $depth, $flags);

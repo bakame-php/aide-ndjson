@@ -54,7 +54,7 @@ final class MapIterator extends IteratorIterator
                     yield $offset => $record;
                 }
             })(),
-            default => new ArrayIterator($value),
+            default => new ArrayIterator($value), /* @phpstan-ignore-line */
         }, $callable);
     }
 }

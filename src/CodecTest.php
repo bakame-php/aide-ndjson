@@ -83,7 +83,7 @@ final class CodecTest extends TestCase
 
         $decoded = iterator_to_array(
             (new Codec())
-                ->mapper(fn (array $row): int => $row['n'])
+                ->mapper(fn (array $row): int => $row['n']) /* @phpstan-ignore-line */
                 ->decode($ndjson)
         );
 
@@ -246,8 +246,9 @@ LDJSON;
         $written = ndjson_write($this->setTabularData(), $path);
         self::assertGreaterThan(0, $written);
 
-        /** @var array<string> $contents */
+        /** @var list<string> $contents */
         $contents = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        self::assertNotFalse($contents);
         self::assertCount(2, $contents);
 
         $row = json_decode($contents[1], true, flags: JSON_THROW_ON_ERROR);
@@ -262,8 +263,9 @@ LDJSON;
         $written = ndjson_write($this->setTabularData(), $path, format: Format::ListWithHeader);
         self::assertGreaterThan(0, $written);
 
-        /** @var array<string> $contents */
+        /** @var list<string> $contents */
         $contents = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        self::assertNotFalse($contents);
         self::assertCount(3, $contents);
 
         self::assertSame(['Name', 'Score'], json_decode($contents[0], true, flags: JSON_THROW_ON_ERROR));
@@ -281,8 +283,8 @@ LDJSON;
         $this->expectException(InvalidNdJsonArgument::class);
 
         (new Codec())
-            ->formatter(function (array $record): array {
-                $record[1] = (int) $record[1];
+            ->formatter(function (array $record): array {  /* @phpstan-ignore-line */
+                $record[1] = (int) $record[1]; /* @phpstan-ignore-line */
 
                 return $record;
             })
