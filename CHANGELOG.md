@@ -9,7 +9,7 @@ All Notable changes to `bakame/aide-ndjon` will be documented in this file.
 **⚠️Package complete rewrite!!⚠️**
 
 - `Codec` to ease API usage
-- `ndjons_encode`, `ndjons_decode`, `ndjons_read`, `ndjons_write` global functions to ease usage.
+- `ndjons_encode`, `ndjons_decode`, `ndjons_read`, `ndjons_write` functions to ease usage.
 
 ### Deprecated
 
