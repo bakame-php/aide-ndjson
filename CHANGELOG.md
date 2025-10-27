@@ -2,6 +2,24 @@
 
 All Notable changes to `bakame/aide-ndjon` will be documented in this file.
 
+## [2.0.1](https://github.com/bakame-php/aide-ndjson/releases/tag/2.0.0...2.0.1) - 2025-10-27
+
+### Added
+
+- None
+
+### Deprecated
+
+- None
+
+### Fixed
+
+- Using `PHPStan` 2.0
+
+### Remove
+
+- None`
+
 ## [2.0.0](https://github.com/bakame-php/aide-ndjson/releases/tag/1.0.0...2.0.0) - 2025-10-20
 
 ### Added
